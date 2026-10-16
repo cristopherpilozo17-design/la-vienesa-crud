@@ -1,0 +1,20 @@
+@startuml
+title Entidad del CRUD - Embutidos La Vienesa
+class Producto <<Entity>> {
+ - id: Long
+ - nombre: String
+ - presentacion: String
+ - precio: BigDecimal
+ - stock: Integer
+ - activo: boolean
+ + Producto()
+ + Producto(nombre, presentacion, precio, stock)
+ + getters y setters
+}
+note right of Producto
+ Tabla producto
+ CRUD en ProductoRepository:
+ crear(), listar(), actualizar(), eliminar()
+ Borrado logico: activo = false
+end note
+@enduml

@@ -1,0 +1,56 @@
+ACTUALIZACION: Puedes ejecutar App.java desde NetBeans. Si DB_PASSWORD no esta configurada, aparece una ventana para ingresar tu clave de PostgreSQL. La clave no se guarda en el proyecto. Cancelar cierra el inicio.
+
+EMBUTIDOS LA VIENESA - CASO ACADEMICO DE CRUD DE PRODUCTOS
+
+La empresa y los productos sirven de contexto. No se afirma que La Vienesa utilice Hibernate.
+Los precios y existencias son ficticios. La aplicacion grafica registra, consulta, actualiza y desactiva productos.
+El borrado es LOGICO: activo=false, conserva la fila y la excluye de las consultas de activos.
+
+REQUISITOS
+JDK 17 o posterior; Maven (NetBeans incluye Maven); PostgreSQL activo.
+El proyecto usa jakarta.persistence, no javax.persistence. No mezclar esas importaciones.
+
+PASOS
+1. Extraer el ZIP. En NetBeans: File > Open Project > seleccionar la carpeta que contiene pom.xml.
+2. En PostgreSQL crear la base con 01_crear_base.sql (conectado a postgres).
+3. Cambiar la conexion a vienesa_academica y ejecutar 02_crear_tabla.sql.
+4. Abrir PowerShell en la carpeta del proyecto y configurar SOLO en esa ventana:
+   $env:DB_URL = 'jdbc:postgresql://localhost:5432/vienesa_academica'
+   $env:DB_USER = 'postgres'
+   $env:DB_PASSWORD = Read-Host 'Contrasena local de PostgreSQL' -MaskInput
+   Si usas Windows PowerShell 5.1, que no soporta -MaskInput, abre PowerShell 7 (pwsh).
+5. Ejecutar mvn test y despues mvn compile exec:java.
+   Si mvn no esta en PATH, reemplazar mvn por:
+   & 'C:\Program Files\Apache NetBeans\java\maven\bin\mvn.cmd'
+   No cerrar esta terminal antes de ejecutar: las variables solo existen en ella.
+   El boton Run de un NetBeans ya abierto no recibe las variables de esta terminal.
+6. En la pantalla: Registrar > Consultar > seleccionar fila > editar precio/stock > Actualizar.
+   Para borrar: seleccionar fila > marcar confirmacion > Desactivar.
+   Capturar cada resultado. Limpiar prepara el formulario para un nuevo registro.
+7. La prueba automatica usa H2 EN MEMORIA. No requiere tu contrasena ni toca PostgreSQL.
+   Esa prueba no sustituye la ejecucion en tu PostgreSQL para las evidencias de clase.
+
+MAPEO
+Producto -> producto; id -> clave primaria; nombre, presentacion, precio, stock y activo -> columnas.
+BigDecimal -> NUMERIC(10,2). @Entity indica entidad. @Id indica identificador.
+La unidad vienesaPU debe coincidir entre App.java y persistence.xml.
+
+ERRORES FRECUENTES
+Connection refused: comprobar que PostgreSQL esta iniciado y confirmar su puerto (puede no ser 5432).
+Password authentication failed: comprobar usuario/contrasena; no son los de acceso a pgAdmin.
+Schema-validation missing table: ejecutar 02_crear_tabla.sql en la base correcta.
+No Persistence provider: compilar con Maven y comprobar META-INF/persistence.xml.
+No suitable driver: resolver la dependencia postgresql del pom.xml.
+El error de inicio de pgAdmin es independiente del servidor PostgreSQL. Puede usarse SQL Shell (psql).
+El proyecto valida la tabla; no borra ni recrea el esquema al iniciar.
+Si estas en Windows PowerShell 5.1 puedes usar temporalmente:
+   $env:DB_PASSWORD = 'TU_CLAVE_LOCAL'
+Reemplaza ese texto solo en tu terminal. No publiques tu clave ni la incluyas en capturas.
+Las imagenes de Evidencias_demo_H2 proceden de una prueba real de los botones contra H2,
+renderizada sin abrir la ventana. No prueban una conexion a PostgreSQL; toma tus propias
+capturas con PostgreSQL para la entrega de la practica.
+
+FUENTES
+https://lavienesa.com.ec/
+https://docs.hibernate.org/orm/6.6/quickstart/html_single/
+https://jdbc.postgresql.org/documentation/use/

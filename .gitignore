@@ -1,0 +1,4 @@
+/target/
+.env
+*.log
+nbproject/private/
